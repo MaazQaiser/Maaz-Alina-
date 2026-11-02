@@ -304,7 +304,9 @@ main { position: relative; counter-reset: sec; overflow-x: clip; } /* branches m
 .cs-layer, .cs-near { position: absolute; left: 0; right: 0; will-change: transform; }
 .cs-layer { inset: 0; }
 .c { position: absolute; }
-.puff { display: block; width: 100%; height: auto; overflow: visible; }
+.puff { display: block; width: 118%; max-width: none; height: auto; margin-left: -9%; pointer-events: none; user-select: none; }
+.cs-layer, .cs-near, .cs-near .c { transform-style: flat; backface-visibility: hidden; }
+.cs-near .c { will-change: transform, opacity; }
 .cs-far { opacity: .75; transform: translateY(calc(var(--c, 0) * -90px)); }
 .cs-mid { opacity: .92; transform: translateY(calc(var(--c, 0) * -170px)); }
 .cs-near { top: 330px; height: 420px; z-index: 2; pointer-events: none; }

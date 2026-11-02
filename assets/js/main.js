@@ -76,6 +76,23 @@
   }
 
   // a soft cumulus cloud: overlapping puffs with cottony edges, lit from above with a lavender underside
+  const CLOUD_DEFS = `<linearGradient id="cloud-body" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FBF8F4"/><stop offset=".5" stop-color="#EFE8E6"/>
+        <stop offset=".8" stop-color="#DCD3DB"/><stop offset="1" stop-color="#CBC2D0"/>
+      </linearGradient>
+      <radialGradient id="puff-light" cx="40%" cy="32%" r="78%">
+        <stop offset="0" stop-color="#FFFFFF" stop-opacity=".8"/><stop offset=".5" stop-color="#FFFCF7" stop-opacity=".4"/>
+        <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="cloud-under" cx="50%" cy="60%" r="60%">
+        <stop offset="0" stop-color="#B9AFC4" stop-opacity=".55"/><stop offset="1" stop-color="#B9AFC4" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="cloud-soft" x="-15%" y="-25%" width="130%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="8" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+        <feGaussianBlur stdDeviation="3.6"/>
+      </filter>`;
+
   function puffCloud(seed, w = 600, h = 280) {
     const r = rng(seed);
     const id = `pc${seed}`;
@@ -100,36 +117,22 @@
       puffs += `<circle cx="${x.toFixed(0)}" cy="${Math.max(rad + 6, y).toFixed(0)}" r="${rad.toFixed(0)}"/>`;
       puffs += `<circle cx="${(x + rad * 0.7).toFixed(0)}" cy="${Math.max(rad, y + rad * 0.5).toFixed(0)}" r="${(rad * 0.7).toFixed(0)}"/>`;
     }
-    // layered for volume: a base wash lit from above, a highlight on every puff, and a cool shadow tucked underneath
-    return `<svg class="puff" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-      <defs><clipPath id="${id}">${puffs}</clipPath></defs>
+    // layered for volume: a base wash lit from above, a highlight on every puff, and a cool shadow tucked underneath.
+    // Padded so soft edges never get trimmed.
+    const P = 90;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w + P * 2}" height="${h + P}" viewBox="${-P} ${-P} ${w + P * 2} ${h + P}">
+      <defs>${CLOUD_DEFS}<clipPath id="${id}">${puffs}</clipPath></defs>
       <g filter="url(#cloud-soft)"><g clip-path="url(#${id})">
         <rect x="-60" y="-160" width="${w + 120}" height="${h + 220}" fill="url(#cloud-body)"/>
         <g fill="url(#puff-light)">${puffs}</g>
         <ellipse cx="${w / 2}" cy="${h * 0.86}" rx="${w * 0.48}" ry="${h * 0.2}" fill="url(#cloud-under)"/>
       </g></g></svg>`;
+    const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+    return `<img class="puff" src="${url}" alt="" decoding="async" draggable="false">`;
   }
 
   // the sky we descend through on the way to "Save the date": far, middle and near clouds; the near ones part as you scroll
   const SKY = `
-    <svg class="defs" width="0" height="0" aria-hidden="true"><defs>
-      <linearGradient id="cloud-body" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#FBF8F4"/><stop offset=".5" stop-color="#EFE8E6"/>
-        <stop offset=".8" stop-color="#DCD3DB"/><stop offset="1" stop-color="#CBC2D0"/>
-      </linearGradient>
-      <radialGradient id="puff-light" cx="40%" cy="32%" r="78%">
-        <stop offset="0" stop-color="#FFFFFF" stop-opacity=".8"/><stop offset=".5" stop-color="#FFFCF7" stop-opacity=".4"/>
-        <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="cloud-under" cx="50%" cy="60%" r="60%">
-        <stop offset="0" stop-color="#B9AFC4" stop-opacity=".55"/><stop offset="1" stop-color="#B9AFC4" stop-opacity="0"/>
-      </radialGradient>
-      <filter id="cloud-soft" x="-15%" y="-25%" width="130%" height="150%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="8" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
-        <feGaussianBlur stdDeviation="3.6"/>
-      </filter>
-    </defs></svg>
     <div class="cs-wrap"><div class="cs-sky"></div>
     <div class="cs-layer cs-far">
       <div class="c" style="left:-6%;top:8%;width:34%">${puffCloud(3, 600, 280)}</div>
