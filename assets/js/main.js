@@ -505,7 +505,8 @@
   musicBtn.addEventListener('click', () => (audio.paused ? audio.play() : audio.pause()));
 
   async function composePiano() {
-    const sr = 44100;
+    // the felt-piano tone is softened above ~2 kHz, so a lighter sample rate sounds the same and builds twice as fast
+    const sr = 22050;
     const eighth = 60 / 54 / 2; // slow and unhurried
     const bar = eighth * 8;
     const bars = 8;
@@ -587,7 +588,7 @@
 
   // decide the track while the envelope is showing, so it's ready by the time the seal is tapped
   if (S.music) audio.src = `${BASE}${S.music}`;
-  else composePiano().then((url) => { audio.src = url; }).catch(() => {});
+  else (window.requestIdleCallback || ((f) => setTimeout(f, 300)))(() => composePiano().then((url) => { audio.src = url; }).catch(() => {}));
 
   /* ---------- opener ---------- */
   const opener = $('#opener');
