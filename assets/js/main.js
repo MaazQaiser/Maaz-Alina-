@@ -498,7 +498,7 @@
   // rendered to a WAV and played through the same <audio> element (so it also plays on iPhones in silent mode).
   const audio = $('#bgm');
   const musicBtn = $('#music');
-  audio.volume = 0.55;
+  audio.volume = 0.45;
   audio.loop = true;
   audio.addEventListener('playing', () => { musicBtn.hidden = false; musicBtn.classList.add('on'); });
   audio.addEventListener('pause', () => musicBtn.classList.remove('on'));
@@ -506,58 +506,62 @@
 
   async function composePiano() {
     const sr = 44100;
-    const eighth = 60 / 66 / 2;
+    const eighth = 60 / 54 / 2; // slow and unhurried
     const bar = eighth * 8;
     const bars = 8;
     const loopLen = bar * bars;
-    const tail = 4;
+    const tail = 6;
     const ctx = new OfflineAudioContext(1, Math.ceil(sr * (loopLen + tail)), sr);
 
-    // a soft room: generated reverb tail mixed under the dry piano
+    // felt-piano warmth: soften the highs, then a long, quiet room
     const bus = ctx.createGain();
-    const ir = ctx.createBuffer(1, sr * 3, sr);
+    const warm = ctx.createBiquadFilter();
+    warm.type = 'lowpass'; warm.frequency.value = 2200; warm.Q.value = 0.4;
+    const ir = ctx.createBuffer(1, sr * 4.5, sr);
     const d = ir.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) ** 2.8;
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) ** 3.2;
     const rev = ctx.createConvolver();
     rev.buffer = ir;
-    const dry = ctx.createGain(); dry.gain.value = 0.75;
-    const wet = ctx.createGain(); wet.gain.value = 0.35;
-    bus.connect(dry).connect(ctx.destination);
-    bus.connect(rev).connect(wet).connect(ctx.destination);
+    const dry = ctx.createGain(); dry.gain.value = 0.62;
+    const wet = ctx.createGain(); wet.gain.value = 0.5;
+    bus.connect(warm);
+    warm.connect(dry).connect(ctx.destination);
+    warm.connect(rev).connect(wet).connect(ctx.destination);
 
     const hz = (m) => 440 * 2 ** ((m - 69) / 12);
-    // piano-like tone: a few harmonics with a quick strike and a long gentle decay
+    // a soft piano note: gentle hammer, slightly stretched overtones that fade faster than the fundamental
     const note = (m, t, len, vel) => {
-      [[1, 1], [2, 0.32], [3, 0.1], [4, 0.04]].forEach(([h, amp]) => {
+      [[1, 1, 0], [2, 0.42, 1.5], [3, 0.16, 3], [4, 0.07, 4.5], [5, 0.03, 6]].forEach(([h, amp, cents]) => {
         const o = ctx.createOscillator();
         const g = ctx.createGain();
-        o.frequency.value = hz(m) * h;
+        o.type = 'sine';
+        o.frequency.value = hz(m) * h * 2 ** (cents / 1200);
         g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(vel * amp, t + 0.008);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + len / h);
+        g.gain.linearRampToValueAtTime(vel * amp, t + 0.018); // soft felt attack, no click
+        g.gain.exponentialRampToValueAtTime(vel * amp * 0.35, t + 0.5);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + len / Math.sqrt(h));
         o.connect(g).connect(bus);
         o.start(t);
         o.stop(t + len + 0.1);
       });
     };
 
-    // D major: Dmaj7 · Bm7 · Gmaj7 · A, gently arpeggiated, with a slow melody on top
+    // D major, dreamy voicings: Dmaj9 · Bm7 · Gmaj7 · Asus — broken gently, a slow melody floating above
     const chords = [
-      { bass: 38, arp: [62, 66, 69, 73] },
-      { bass: 47, arp: [59, 62, 66, 69] },
-      { bass: 43, arp: [59, 62, 66, 67] },
-      { bass: 45, arp: [61, 64, 69, 73] },
+      { bass: 38, arp: [57, 64, 66, 69] },
+      { bass: 47, arp: [54, 62, 66, 69] },
+      { bass: 43, arp: [55, 62, 66, 71] },
+      { bass: 45, arp: [57, 62, 64, 69] },
     ];
-    const pattern = [0, 1, 2, 3, 2, 1, 2, 3];
-    const melody = [[78, 76], [74, 76], [74, 71], [73, 76], [78, 81], [78, 74], [74, 71], [73, 69]];
+    const pattern = [0, 1, 2, 3, 2, 1, 3, 2];
+    const melody = [[78, null, 76], [74, null, 73], [74, 76, 78], [76, null, null], [81, null, 78], [76, null, 74], [73, 74, 76], [69, null, null]];
     for (let b = 0; b < bars; b++) {
       const c = chords[b % 4];
       const t0 = b * bar;
-      note(c.bass, t0, 4.5, 0.16);
-      note(c.bass + 12, t0 + eighth * 4, 3, 0.07);
-      pattern.forEach((p, i) => note(c.arp[p], t0 + i * eighth, 2.4, 0.06 + (i === 0 ? 0.02 : 0)));
-      note(melody[b][0], t0, 3.2, 0.09);
-      note(melody[b][1], t0 + eighth * 4, 2.6, 0.07);
+      note(c.bass, t0, 6, 0.11);
+      note(c.bass + 12, t0 + eighth * 4, 4, 0.045);
+      pattern.forEach((p, i) => note(c.arp[p], t0 + i * eighth + (i % 2) * 0.015, 3.2, i === 0 ? 0.05 : 0.036));
+      melody[b].forEach((m, i) => m && note(m, t0 + i * eighth * 3, 4.2, 0.07));
     }
 
     const out = await ctx.startRendering();
