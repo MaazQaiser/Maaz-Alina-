@@ -324,7 +324,6 @@
 
   function storyHTML() {
     const text = (s) => `<div class="moment-text">
-        <p class="caps tiny">${esc(s.label)}</p>
         <h4 class="display">${esc(s.title)}</h4>
         <p>${esc(s.text)}</p>
         ${s.closing ? `<p class="closing">${esc(s.closing)}</p>` : ''}
