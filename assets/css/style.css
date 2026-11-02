@@ -588,6 +588,25 @@ main { position: relative; counter-reset: sec; overflow-x: clip; } /* branches m
   .tab-en { font-size: 10px; letter-spacing: .08em; }
 }
 
+/* ============ Phones: same look, lighter work, so scrolling and the opening stay smooth ============ */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  /* paper grain without blending (blended full-screen layers make phones repaint the whole page) */
+  body::after { mix-blend-mode: normal; opacity: .05; }
+  .env-back::after, .flap i::after, .paper-card::after { display: none; }
+  /* shadows that would be redrawn every frame */
+  .flap, .flap-top { filter: none; }
+  .sway { filter: none !important; }
+  .seal-img { filter: drop-shadow(0 6px 8px rgba(78, 56, 20, .3)); }
+  /* frosted glass is costly while scrolling; a solid tint looks the same here */
+  .tabs, .monogram, .music { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(251, 247, 239, .94); }
+  /* the hero grows out of the envelope on the GPU only */
+  body.env .hero { box-shadow: 0 0 0 8px #FBF8F1; transition: transform 1.2s cubic-bezier(.3, .7, .2, 1), border-radius 2s ease; }
+  body.env-grow .hero { box-shadow: none; transition: transform 2s cubic-bezier(.65, 0, .25, 1), border-radius 2s ease; }
+  .hero-photo, .hero-text, .hero-veil { will-change: transform, opacity; }
+  /* fewer drifting petals */
+  .petals i:nth-child(n+5) { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01s !important; transition-delay: 0s !important; }
   html { scroll-behavior: auto; }
