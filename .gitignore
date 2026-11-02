@@ -1,0 +1,5 @@
+.DS_Store
+# original source pictures — the site uses the optimised copies in assets/img
+assets/src/
+# local editor settings
+.claude/
