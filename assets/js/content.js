@@ -28,7 +28,7 @@ window.SITE = {
       after: 'reception to follow',
       // where the barat sets off from — shown under the countdown and in the FAQ
       departure: { time: '11:30 AM', place: 'J Block, Gulberg III', city: 'Lahore', mapQuery: 'J Block, Gulberg III, Lahore' },
-      contact: { name: 'Ch Javeed Ahmad', phone: '+92 301 4453382' },
+      contact: { name: 'Javed Ahmad', phone: '+92 301 4453382' },
       faq: [
         { q: 'Where will the barat depart from?', a: 'The barat will depart from J Block, Gulberg III, Lahore at 11:30 AM.' },
       ],
