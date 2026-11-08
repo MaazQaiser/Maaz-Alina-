@@ -81,6 +81,5 @@ window.SITE = {
   faq: [ // TODO
     { q: 'What time should we arrive?', a: 'Please arrive by 12:30 PM so you don’t miss a moment.' },
     { q: 'Is there parking at the venue?', a: 'Yes, parking is available on site.' },
-    { q: 'Are children welcome?', a: 'Of course — little ones are part of the family.' },
   ],
 };
