@@ -55,7 +55,7 @@
   // full-bleed photo per event: landscape picture on wide screens, portrait on phones
   const HERO_PHOTOS = {
     barat: { wide: 'garden-steps.webp', tall: 'garden-steps.webp', alt: 'Maaz and Alina walking down the garden steps' },
-    walima: { wide: 'walima-steps.webp', tall: 'walima-steps.webp', alt: 'Maaz and Alina on the garden steps at sunset' },
+    walima: { wide: 'walima-sunset.webp', tall: 'walima-sunset.webp', alt: 'Maaz and Alina in the garden at sunset' },
   };
 
   function heroHTML() {

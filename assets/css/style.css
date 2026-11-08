@@ -114,7 +114,7 @@ body.env-grow .env-back { opacity: 0; transition: opacity 1.8s ease .2s; }
   opacity: 0; transition: opacity 1.2s ease 1s; }
 .opener-foot .amp { font-size: 1em; }
 .opener-foot i { font-style: normal; }
-@media (max-width: 560px) { .opener-foot span { display: block; line-height: 2; } .opener-foot i { display: none; } }
+@media (max-width: 560px) { .opener-foot > span { display: block; line-height: 2; } .opener-foot > i { display: none; } }
 .opener.is-in .opener-foot { opacity: .7; }
 .opener.is-opening .seal { transition: opacity .6s ease, transform .7s var(--ease); opacity: 0; transform: translateY(-30px) scale(1.12) rotate(-8deg); }
 .opener.is-opening .tap, .opener.is-opening .opener-foot { transition: opacity .4s ease; opacity: 0; animation: none; }
@@ -204,7 +204,7 @@ body[data-theme="barat"] .scroll-cue span { background: #FBF6EC; }
 }
 
 /* Walima Reception hero: same clear photo and light type, with the words on the right, away from the couple */
-.hero-photo[data-for="walima"] img { object-position: 46% 50%; }
+.hero-photo[data-for="walima"] img { object-position: 52% 50%; }
 body[data-theme="walima"] .hero-shade { background:
   linear-gradient(0deg, var(--paper) 0%, rgba(247, 241, 230, 0) 8%),
   linear-gradient(0deg, rgba(22, 16, 10, .62) 6%, rgba(22, 16, 10, .2) 32%, rgba(22, 16, 10, 0) 50%); }
@@ -214,7 +214,7 @@ body[data-theme="walima"] .hero-kicker [lang="ur"] { color: #FBF6EC; }
 body[data-theme="walima"] .scroll-cue { background: rgba(251, 246, 236, .3); }
 body[data-theme="walima"] .scroll-cue span { background: #FBF6EC; }
 @media (min-aspect-ratio: 1/1) and (min-width: 900px) {
-  .hero-photo[data-for="walima"] img { object-position: 30% 50%; }
+  .hero-photo[data-for="walima"] img { object-position: 36% 50%; }
   body[data-theme="walima"] .hero-shade { background:
     linear-gradient(0deg, var(--paper) 0%, rgba(247, 241, 230, 0) 7%),
     linear-gradient(270deg, rgba(22, 16, 10, .62) 0%, rgba(22, 16, 10, .3) 26%, rgba(22, 16, 10, 0) 46%),
