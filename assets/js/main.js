@@ -380,7 +380,7 @@
         <p class="script signature">${names}</p>
         ${S.hashtag ? `<p class="hashtag">${esc(S.hashtag)}</p>` : ''}
       </div>
-      <figure class="footer-photo"><img loading="lazy" src="${img('family.webp')}" alt="Maaz and Alina with their families"></figure>
+      <figure class="footer-photo"><img loading="lazy" src="${img('family-footer.webp')}" alt="Maaz and Alina with their families"></figure>
     </footer>`;
   }
 
